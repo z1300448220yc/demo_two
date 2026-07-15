@@ -40,13 +40,13 @@ import androidx.compose.ui.text.style.TextDecoration
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import androidx.lifecycle.viewmodel.compose.viewModel
-import com.itcast.demo_two.ui.viewmodel.TodoViewModel
+import com.itcast.demo_two.ui.viewmodel.TodoRoomViewModel
 import com.itcast.demo_two.utils.SettingManager
 import kotlinx.coroutines.launch
 
 @OptIn(ExperimentalMaterial3Api::class)
 @Composable
-fun TodoScreen(viewModel: TodoViewModel = viewModel()) {
+fun TodoScreen(viewModel: TodoRoomViewModel = viewModel()) {
     var inputText by remember { mutableStateOf("") }
     val todos by viewModel.todos.collectAsState()
 
@@ -150,7 +150,7 @@ fun TodoScreen(viewModel: TodoViewModel = viewModel()) {
                             Checkbox(
                                 checked = todo.isDone,
                                 onCheckedChange = { checked ->
-                                    viewModel.toggleTodo(todo.id)
+                                    viewModel.toggleTodo(todo)
                                 }
                             )
                             Text(
@@ -161,7 +161,7 @@ fun TodoScreen(viewModel: TodoViewModel = viewModel()) {
                                 color = if (todo.isDone) Color.Red else Color.Black
                             )
                             IconButton(onClick = {
-                                viewModel.deleteTodo(todo.id)
+                                viewModel.deleteTodo(todo)
                             }) {
                                 Icon(Icons.Default.Close, contentDescription = "删除")
                             }
