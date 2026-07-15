@@ -3,9 +3,11 @@ package com.itcast.demo_two.data.local
 import android.content.Context
 import androidx.datastore.core.DataStore
 import androidx.datastore.preferences.core.Preferences
+import androidx.datastore.preferences.core.edit
 import androidx.datastore.preferences.core.stringPreferencesKey
 import androidx.datastore.preferences.preferencesDataStore
 import com.itcast.demo_two.data.model.TodoItem
+import kotlinx.serialization.builtins.ListSerializer
 import kotlinx.serialization.json.Json
 
 
@@ -25,7 +27,10 @@ class TodoPreferences(context: Context) {
 
     // 4. 保存todos
     suspend fun saveTodos(todos: List<TodoItem>) {
-
+        // 4.1 把 kotlin对象 转成 json字符串
+        val jsonStr = json.encodeToString(ListSerializer(TodoItem.serializer()), todos)
+        // 4.2 保存
+        dataStore.edit { it[TODO_KEY] = jsonStr }
     }
 
     // 5. 获取todos
