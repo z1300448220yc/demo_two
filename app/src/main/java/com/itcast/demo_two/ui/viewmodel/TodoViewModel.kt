@@ -34,6 +34,7 @@ class TodoViewModel(application: Application) : AndroidViewModel(application) {
     fun addTodo(text: String) {
         val newTodo = TodoItem(text = text)
         val updated = _todos.value + newTodo
+        _todos.value = updated
         saveToDataStore(updated)
     }
 
