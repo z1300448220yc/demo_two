@@ -7,6 +7,8 @@ import androidx.datastore.preferences.core.edit
 import androidx.datastore.preferences.core.stringPreferencesKey
 import androidx.datastore.preferences.preferencesDataStore
 import com.itcast.demo_two.data.model.TodoItem
+import kotlinx.coroutines.flow.first
+import kotlinx.coroutines.flow.map
 import kotlinx.serialization.builtins.ListSerializer
 import kotlinx.serialization.json.Json
 
@@ -35,6 +37,10 @@ class TodoPreferences(context: Context) {
 
     // 5. 获取todos
     suspend fun loadTodos(): List<TodoItem> {
-        return emptyList()
+        return dataStore.data.map { prefs ->
+            val jsonStr = prefs[TODO_KEY] ?: ""
+            if (jsonStr.isEmpty()) emptyList()
+            else json.decodeFromString(ListSerializer(TodoItem.serializer()), jsonStr)
+        }.first()
     }
 }
