@@ -30,6 +30,7 @@ import androidx.compose.runtime.collectAsState
 import androidx.compose.runtime.getValue
 import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.remember
+import androidx.compose.runtime.rememberCoroutineScope
 import androidx.compose.runtime.setValue
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
@@ -41,6 +42,7 @@ import androidx.compose.ui.unit.sp
 import androidx.lifecycle.viewmodel.compose.viewModel
 import com.itcast.demo_two.ui.viewmodel.TodoViewModel
 import com.itcast.demo_two.utils.SettingManager
+import kotlinx.coroutines.launch
 
 @OptIn(ExperimentalMaterial3Api::class)
 @Composable
@@ -53,22 +55,29 @@ fun TodoScreen(viewModel: TodoViewModel = viewModel()) {
 
     // 控制弹窗的显示和隐藏
     var showNameDialog by remember { mutableStateOf(false) }
+    val scope = rememberCoroutineScope()
 
     if (showNameDialog) {
+        var tempName by remember { mutableStateOf("") }
+
+
         AlertDialog(
             onDismissRequest = { showNameDialog = false },
             title = { Text("设置昵称") },
             text = {
                 OutlinedTextField(
-                    value = "",
-                    onValueChange = {  },
+                    value = tempName,
+                    onValueChange = { tempName = it },
                     label = { Text("输入昵称") },
                     singleLine = true
                 )
             },
             confirmButton = {
                 TextButton(onClick = {
-
+                    scope.launch {
+                        SettingManager.setNickName(tempName)
+                    }
+                    showNameDialog = false
                 }) { Text("确定") }
             },
             dismissButton = {
